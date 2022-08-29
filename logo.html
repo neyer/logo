@@ -103,7 +103,7 @@ function drawArcs(color, numArcs, radius) {
 
 blankCanvas();
 
-function lerp(a,b,frac) {
+function colorInterp(a,b,frac) {
   return a + frac*(b-a);
 }
 
@@ -127,11 +127,13 @@ for (var i = 0; i < primes.length; ++i) {
   // Age, youth, death, the inevitability of suffering
   // my own inability to help beyond my limits, which i still struggle to accept
   var thisRingColor = hslToRgb(
-      lerp(goldHSV[0], coolBlueHSV[0], fraction),
+      colorInterp(goldHSV[0], coolBlueHSV[0], fraction),
       goldHSV[1], 
       goldHSV[2]);
   
-  var thisRadius = (G.width/2) *(0.2 + Math.sin(fraction * Math.PI/2));
+  var shelfSize = 0.08;
+  var maxRadius = G.width*0.48;
+  var thisRadius = maxRadius *(shelfSize +  (1-shelfSize)*Math.sin(fraction * Math.PI/2));
 
   drawArcs(thisRingColor, thisPrime, thisRadius);
 }
