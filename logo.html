@@ -1,7 +1,7 @@
 <html>
 
 <body>
-<canvas id="canvas" width="1024" height="1024">
+<canvas id="canvas" width="1400" height="1400">
 </canvas>
 </body>
 <script>
@@ -11,8 +11,8 @@ var my_canvas = document.getElementById('canvas'),
     
 // globlas
 var G = {
-  width:1024,
-  height:1024,
+  width:1400,
+  height:1400,
 };
 
 function blankCanvas() {
@@ -88,6 +88,8 @@ function drawArcs(color, numArcs, radius) {
           arcCenterX, arcCenterY, radius*Math.PI/numArcs);
 
     gradient.addColorStop(0, color);
+    gradient.addColorStop(0.1, color);
+    gradient.addColorStop(0.8, '#000f');
     gradient.addColorStop(1, '#000f');
 
 
@@ -119,12 +121,10 @@ var coolBlue = "#b9f";
 var coolBlueHSV = [ 260/360.0, 1, 0.8 ];
 var goldHSV = [ 51/360.0, 1, 0.8 ];
 
-var minWidth = 1;
-var maxWidth = 8;
 
 
 
-function drawArcForPrime(prime, fraction, flipWidth) {
+function drawArcForPrime(prime, fraction, flipWidth, minWidth, maxWidth) {
   // Age, youth, death, the inevitability of suffering
   // my own inability to help beyond my limits, which i still struggle to accept
   var thisRingColor = hslToRgb(
@@ -136,19 +136,24 @@ function drawArcForPrime(prime, fraction, flipWidth) {
   var maxRadius = G.width*0.48;
   var thisRadius = maxRadius *(shelfSize +  (1-shelfSize)*Math.sin(fraction * Math.PI/2));
 
-  context.lineWidth = flipWidth ? maxWidth*(1-fraction) : maxWidth*fraction; 
+  context.lineWidth = flipWidth ? minWidth + maxWidth*(1-fraction) : minWidth + maxWidth*fraction; 
 
   drawArcs(thisRingColor, prime, thisRadius);
 
 }
 
+
+var maxWidthInner = 8;
+var maxWidthOuter = 20;
 for (var i = 0; i < primes.length; ++i) {
-
-  //var thisPrime = primes[i]; //primes[primes.length-i];
   var fraction = i/primes.length;
-
-  drawArcForPrime(primes[i], fraction, true);
-  drawArcForPrime(primes[primes.length - i], fraction, false);
+  if (fraction < 0.5) {
+    drawArcForPrime(primes[i], fraction, true, 2, maxWidthOuter);
+    drawArcForPrime(primes[primes.length - i], fraction, false, 1, maxWidthInner);
+  } else {
+    drawArcForPrime(primes[primes.length - i], fraction, false, 1, maxWidthInner);
+    drawArcForPrime(primes[i], fraction, true, 2, maxWidthOuter);
+  }
 }
 </script>
 </html>
