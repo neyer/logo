@@ -1,0 +1,120 @@
+<html>
+
+<body>
+<canvas id="canvas" width="512" height="512">
+</canvas>
+</body>
+<script>
+
+var my_canvas = document.getElementById('canvas'),
+    context = my_canvas.getContext("2d");
+    
+// globlas
+var G = {
+  width:512,
+  height:512,
+};
+
+function blankCanvas() {
+  context.fillStyle = "#000";
+	context.fillRect(0,0, G.width, G.height);
+}
+
+function hue2rgb(p, q, t) {
+  if (t < 0) t += 1;
+  if (t > 1) t -= 1;
+  if (t < 1/6) return p + (q - p) * 6 * t;
+  if (t < 1/2) return q;
+  if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+  return p;
+}
+
+function hslToRgb(h, s, l) {
+  var r, g, b;
+  if (s == 0) {
+    r = g = b = l; // achromatic
+  } else {
+
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  return "rgb("+
+    parseInt(r * 255)+", "+
+    parseInt(g * 255)+", "+
+    parseInt(b * 255)+")" ;
+}
+
+// draws alternating Arcs
+// for num
+function drawArcs(color, numArcs, radius) {
+
+
+  var centerX = G.width/2;
+  var centerY = G.height/2;
+
+
+   
+  var startAngle = 0;
+  var arcAngle = (Math.PI*2.0)/numArcs;
+ // All shapes start at the top, angle Pi/2
+  for (var sideNo = 0; sideNo < numArcs; ++sideNo) {  
+    // create a gradient where the color peaks at the center of this edge of the arc
+    // the starting circle is the center of this arc here
+    
+    var arcCenterAngle = (startAngle + startAngle + arcAngle)/2.0;
+    var arcCenterX = centerX + radius*Math.cos(arcCenterAngle);
+    var arcCenterY = centerY + radius*Math.sin(arcCenterAngle);
+
+    /*
+      // I miss you, dad
+      // I wish you could hear me, and I could hear you
+      // and we could talk about what it was like, when you were my age and i was a kid
+      // and what it is like for you now
+      console.log("drawingAnArcHere");
+      console.log(startAngle);
+      console.log(arcCenterAngle);
+      console.log(arcCenterX +","+arcCenterY);
+    */
+  
+    var centerRadius = 1
+
+    var gradient = context.createRadialGradient(
+          arcCenterX, arcCenterY, centerRadius,
+          arcCenterX, arcCenterY, radius*Math.PI/numArcs);
+
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, '#000f');
+
+
+    context.beginPath();
+    context.strokeStyle = gradient;
+    context.arc(centerX, centerY, radius, startAngle, startAngle + arcAngle);
+    startAngle = startAngle +arcAngle;
+    context.stroke();
+ }
+}
+
+
+
+blankCanvas();
+
+// primes
+var primes = [
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,211, 223, 227, 229, 233, 239, 241, 251, 
+ ]
+
+var coolBlue = "#b9f";
+
+for (var i = 0; i < primes.length; ++i) {
+  var thisPrime = primes[i];
+  var fraction = i/primes.length;
+  drawArcs(coolBlue, thisPrime, fraction*G.width/2);
+}
+</script>
+</html>
