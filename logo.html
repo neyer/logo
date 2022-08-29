@@ -1,7 +1,7 @@
 <html>
 
 <body>
-<canvas id="canvas" width="512" height="512">
+<canvas id="canvas" width="1024" height="1024">
 </canvas>
 </body>
 <script>
@@ -11,8 +11,8 @@ var my_canvas = document.getElementById('canvas'),
     
 // globlas
 var G = {
-  width:512,
-  height:512,
+  width:1024,
+  height:1024,
 };
 
 function blankCanvas() {
@@ -103,18 +103,37 @@ function drawArcs(color, numArcs, radius) {
 
 blankCanvas();
 
+function lerp(a,b,frac) {
+  return a + frac*(b-a);
+}
+
 // primes
 var primes = [
-2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
-101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,211, 223, 227, 229, 233, 239, 241, 251, 
- ]
+2, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,];
+//211, 223, 227, 229, 233, 239, 241, 251 ];
 
 var coolBlue = "#b9f";
 
+var coolBlueHSV = [ 260/360.0, 1, 0.8 ];
+var goldHSV = [ 51/360.0, 1, 0.8 ];
+
+
 for (var i = 0; i < primes.length; ++i) {
-  var thisPrime = primes[i];
+
+  var thisPrime = primes[primes.length-i];
   var fraction = i/primes.length;
-  drawArcs(coolBlue, thisPrime, fraction*G.width/2);
+
+  // Age, youth, death, the inevitability of suffering
+  // my own inability to help beyond my limits, which i still struggle to accept
+  var thisRingColor = hslToRgb(
+      lerp(goldHSV[0], coolBlueHSV[0], fraction),
+      goldHSV[1], 
+      goldHSV[2]);
+  
+  var thisRadius = (G.width/2) *(0.2 + Math.sin(fraction * Math.PI/2));
+
+  drawArcs(thisRingColor, thisPrime, thisRadius);
 }
 </script>
 </html>
