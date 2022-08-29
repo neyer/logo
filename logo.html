@@ -118,12 +118,12 @@ var coolBlue = "#b9f";
 var coolBlueHSV = [ 260/360.0, 1, 0.8 ];
 var goldHSV = [ 51/360.0, 1, 0.8 ];
 
+var minWidth = 1;
+var maxWidth = 8;
 
-for (var i = 0; i < primes.length; ++i) {
 
-  var thisPrime = primes[primes.length-i];
-  var fraction = i/primes.length;
 
+function drawArcForPrime(prime, fraction, flipWidth) {
   // Age, youth, death, the inevitability of suffering
   // my own inability to help beyond my limits, which i still struggle to accept
   var thisRingColor = hslToRgb(
@@ -135,7 +135,19 @@ for (var i = 0; i < primes.length; ++i) {
   var maxRadius = G.width*0.48;
   var thisRadius = maxRadius *(shelfSize +  (1-shelfSize)*Math.sin(fraction * Math.PI/2));
 
-  drawArcs(thisRingColor, thisPrime, thisRadius);
+  context.lineWidth = flipWidth ? maxWidth*(1-fraction) : maxWidth*fraction; 
+
+  drawArcs(thisRingColor, prime, thisRadius);
+
+}
+
+for (var i = 0; i < primes.length; ++i) {
+
+  //var thisPrime = primes[i]; //primes[primes.length-i];
+  var fraction = i/primes.length;
+
+  drawArcForPrime(primes[i], fraction, true);
+  drawArcForPrime(primes[primes.length - i], fraction, false);
 }
 </script>
 </html>
